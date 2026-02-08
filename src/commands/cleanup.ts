@@ -1,5 +1,5 @@
-import { execSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import * as p from "@clack/prompts";
 import pc from "picocolors";
@@ -8,7 +8,7 @@ import type { CleanupResult } from "../types/index.js";
 export async function cleanup(dryRun = false, jsonMode = false): Promise<void> {
   const cwd = process.cwd();
   const resultsDir = join(cwd, ".agent", "results");
-  const tmpDir = "/tmp";
+  const tmpDir = tmpdir();
 
   const result: CleanupResult = {
     cleaned: 0,
@@ -26,6 +26,35 @@ export async function cleanup(dryRun = false, jsonMode = false): Promise<void> {
     result.skipped++;
   };
 
+  const safeRemove = (targetPath: string) => {
+    if (dryRun) return;
+    try {
+      rmSync(targetPath, { force: true });
+    } catch {}
+  };
+
+  const isProcessRunning = (pid: number): boolean => {
+    try {
+      process.kill(pid, 0);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const killProcess = async (pid: number) => {
+    if (dryRun) return;
+    try {
+      process.kill(pid);
+    } catch {}
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      if (isProcessRunning(pid)) {
+        process.kill(pid, "SIGKILL");
+      }
+    } catch {}
+  };
+
   try {
     const pidFiles = readdirSync(tmpDir).filter(
       (f) => f.startsWith("subagent-") && f.endsWith(".pid"),
@@ -37,46 +66,24 @@ export async function cleanup(dryRun = false, jsonMode = false): Promise<void> {
 
       if (!pidContent) {
         logAction(`Removing empty PID file: ${pidPath}`);
-        if (!dryRun) {
-          try {
-            execSync(`rm -f "${pidPath}"`);
-          } catch {}
-        }
+        safeRemove(pidPath);
         continue;
       }
 
       const pid = parseInt(pidContent, 10);
       if (Number.isNaN(pid)) {
         logAction(`Removing invalid PID file: ${pidPath}`);
-        if (!dryRun) {
-          try {
-            execSync(`rm -f "${pidPath}"`);
-          } catch {}
-        }
+        safeRemove(pidPath);
         continue;
       }
 
-      try {
-        execSync(`kill -0 ${pid} 2>/dev/null`);
+      if (isProcessRunning(pid)) {
         logAction(`Killing orphaned process PID=${pid} (from ${pidPath})`);
-        if (!dryRun) {
-          try {
-            execSync(`kill ${pid} 2>/dev/null || true`);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            try {
-              execSync(`kill -0 ${pid} 2>/dev/null`);
-              execSync(`kill -9 ${pid} 2>/dev/null || true`);
-            } catch {}
-            execSync(`rm -f "${pidPath}"`);
-          } catch {}
-        }
-      } catch {
+        await killProcess(pid);
+        safeRemove(pidPath);
+      } else {
         logAction(`Removing stale PID file (process gone): ${pidPath}`);
-        if (!dryRun) {
-          try {
-            execSync(`rm -f "${pidPath}"`);
-          } catch {}
-        }
+        safeRemove(pidPath);
       }
     }
   } catch {}
@@ -96,19 +103,16 @@ export async function cleanup(dryRun = false, jsonMode = false): Promise<void> {
           const pidContent = readFileSync(pidPath, "utf-8").trim();
           const pid = parseInt(pidContent, 10);
           if (!Number.isNaN(pid)) {
-            execSync(`kill -0 ${pid} 2>/dev/null`);
-            logSkip(`Log file has active process: ${logPath}`);
-            continue;
+            if (isProcessRunning(pid)) {
+              logSkip(`Log file has active process: ${logPath}`);
+              continue;
+            }
           }
         } catch {}
       }
 
       logAction(`Removing stale log file: ${logPath}`);
-      if (!dryRun) {
-        try {
-          execSync(`rm -f "${logPath}"`);
-        } catch {}
-      }
+      safeRemove(logPath);
     }
   } catch {}
 
@@ -131,33 +135,24 @@ export async function cleanup(dryRun = false, jsonMode = false): Promise<void> {
           const pid = parseInt(pidStr?.trim() || "", 10);
           if (Number.isNaN(pid)) continue;
 
-          try {
-            execSync(`kill -0 ${pid} 2>/dev/null`);
+          if (isProcessRunning(pid)) {
             hasRunning = true;
             logAction(
               `Killing orphaned parallel agent PID=${pid} (${agent?.trim() || "unknown"})`,
             );
-            if (!dryRun) {
-              try {
-                execSync(`kill ${pid} 2>/dev/null || true`);
-                execSync(`rm -f "${pidsPath}"`);
-              } catch {}
-            }
-          } catch {}
+            await killProcess(pid);
+            safeRemove(pidsPath);
+          }
         }
 
         if (!hasRunning) {
           logAction(`Removing stale PID list: ${pidsPath}`);
-          if (!dryRun) {
-            try {
-              execSync(`rm -f "${pidsPath}"`);
-            } catch {}
-          }
+          safeRemove(pidsPath);
         } else {
           if (!dryRun) {
             await new Promise((resolve) => setTimeout(resolve, 1000));
             try {
-              execSync(`rm -f "${pidsPath}"`);
+              rmSync(pidsPath, { force: true });
             } catch {}
           }
         }

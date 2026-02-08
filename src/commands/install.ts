@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import * as p from "@clack/prompts";
@@ -86,12 +87,32 @@ export async function install(): Promise<void> {
       "Installed",
     );
 
-    p.outro(pc.green("Done! Open your project in your IDE to use the skills."));
+    // --- Git rerere Setup ---
+    try {
+      const rerereEnabled = execSync("git config --get rerere.enabled", {
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "ignore"],
+      }).trim();
 
-    p.note(
-      `${pc.yellow("❤️")} Enjoying oh-my-ag? Give it a star!\n${pc.dim("gh api --method PUT /user/starred/first-fluke/oh-my-ag")}`,
-      "Support",
-    );
+      if (rerereEnabled === "true") {
+        p.log.success(pc.green("git rerere is already enabled."));
+      }
+    } catch {
+      const shouldEnable = await p.confirm({
+        message:
+          "Enable git rerere? (Recommended for multi-agent merge conflict reuse)",
+        initialValue: true,
+      });
+
+      if (!p.isCancel(shouldEnable) && shouldEnable) {
+        try {
+          execSync("git config --global rerere.enabled true");
+          p.log.success(pc.green("git rerere enabled globally!"));
+        } catch (err) {
+          p.log.error(`Failed to enable git rerere: ${err}`);
+        }
+      }
+    }
 
     // --- MCP Configuration Setup ---
     const homeDir = process.env.HOME || process.env.USERPROFILE || "";
@@ -143,7 +164,7 @@ export async function install(): Promise<void> {
               "-y",
               "oh-my-ag@latest",
               "bridge",
-              "http://localhost:12341/sse",
+              "http://localhost:12341/mcp",
             ],
             disabled: false,
           };
@@ -177,11 +198,11 @@ export async function install(): Promise<void> {
     if (geminiConfigExists && geminiConfig && geminiConfig.mcpServers) {
       const serenaConfig = geminiConfig.mcpServers.serena;
       const isSerenaConfigured =
-        serenaConfig && serenaConfig.url === "http://localhost:12341/sse";
+        serenaConfig && serenaConfig.url === "http://localhost:12341/mcp";
 
       if (!isSerenaConfigured) {
         const shouldConfigureGemini = await p.confirm({
-          message: "Configure Serena for Gemini CLI? (SSE Mode)",
+          message: "Configure Serena for Gemini CLI? (HTTP Mode)",
           initialValue: true,
         });
 
@@ -189,7 +210,7 @@ export async function install(): Promise<void> {
           // User cancelled
         } else if (shouldConfigureGemini) {
           geminiConfig.mcpServers.serena = {
-            url: "http://localhost:12341/sse",
+            url: "http://localhost:12341/mcp",
           };
 
           try {
@@ -204,6 +225,13 @@ export async function install(): Promise<void> {
         }
       }
     }
+
+    p.outro(pc.green("Done! Open your project in your IDE to use the skills."));
+
+    p.note(
+      `${pc.yellow("❤️")} Enjoying oh-my-ag? Give it a star or sponsor!\n${pc.dim("gh api --method PUT /user/starred/first-fluke/oh-my-ag")}\n${pc.dim("https://github.com/sponsors/first-fluke")}`,
+      "Support",
+    );
   } catch (error) {
     spinner.stop("Installation failed");
     p.log.error(error instanceof Error ? error.message : String(error));

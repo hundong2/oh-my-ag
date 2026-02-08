@@ -35,6 +35,10 @@ export interface Metrics {
   linesRemoved: number;
   lastUpdated: string;
   startDate: string;
+  lastSessionId?: string;
+  lastSessionStatus?: string;
+  lastSessionStarted?: string;
+  lastSessionDuration?: number;
 }
 
 export interface Retrospective {

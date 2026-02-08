@@ -1,5 +1,242 @@
 # Changelog
 
+## [1.13.2](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.13.1...oh-my-ag-v1.13.2) (2026-02-08)
+
+
+### Documentation
+
+* simplify installation options in README files ([b4c9a7a](https://github.com/first-fluke/oh-my-ag/commit/b4c9a7a1ac3010742e9d993ec244f9f16beb9c8e))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.13.1 ([bfd0f72](https://github.com/first-fluke/oh-my-ag/commit/bfd0f72dd621cd8580be16819f520399bdabd091))
+
+## [1.13.1](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.13.0...oh-my-ag-v1.13.1) (2026-02-08)
+
+
+### Documentation
+
+* reduce dashboard duplication in readmes ([1b0524f](https://github.com/first-fluke/oh-my-ag/commit/1b0524feebac4919f76f79d1549b6632a707c68b))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.13.0 ([cd4025a](https://github.com/first-fluke/oh-my-ag/commit/cd4025aca6e7b1f0579539066087332ed74a609d))
+
+## [1.13.0](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.12.2...oh-my-ag-v1.13.0) (2026-02-08)
+
+
+### Features
+
+* **install,doctor:** show support prompt last with sponsor link ([96624f3](https://github.com/first-fluke/oh-my-ag/commit/96624f3c758df51430bc2664f3f26314e54b4ccf))
+
+
+### Documentation
+
+* split project structure docs and sync Korean README registry ([fbdb3fb](https://github.com/first-fluke/oh-my-ag/commit/fbdb3fb968f78b7cb3fe3a9d17790677f02f4ac5))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.12.2 ([583ddb0](https://github.com/first-fluke/oh-my-ag/commit/583ddb0f46ea79500b51a81138eb0fe015e30c8e))
+
+## [1.12.2](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.12.1...oh-my-ag-v1.12.2) (2026-02-08)
+
+
+### Documentation
+
+* add Buy Me a Coffee badge to sponsor sections ([641302e](https://github.com/first-fluke/oh-my-ag/commit/641302e774b5a32c705268ec36eb2aab4bb4c4f9))
+* add sponsors section and SPONSORS.md ([507303a](https://github.com/first-fluke/oh-my-ag/commit/507303a0be7577dc7c3f5aa6c1b2514af160fc11))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.12.1 ([0fcfae4](https://github.com/first-fluke/oh-my-ag/commit/0fcfae4ddaf48c555d08fef9e4fcdc749e461bbc))
+
+## [1.12.1](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.12.0...oh-my-ag-v1.12.1) (2026-02-08)
+
+
+### Bug Fixes
+
+* **commit:** update co_author to First Fluke ([23fbc34](https://github.com/first-fluke/oh-my-ag/commit/23fbc34e527f050c956acf545e3f354999c20053))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.12.0 ([0473580](https://github.com/first-fluke/oh-my-ag/commit/04735801f9df955c32fafbeb6497b3e28076f02a))
+
+## [1.12.0](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.11.0...oh-my-ag-v1.12.0) (2026-02-08)
+
+
+### Features
+
+* **agent:** add monorepo config-based workspace detection ([c655f50](https://github.com/first-fluke/oh-my-ag/commit/c655f509257f09d19f89c1875055daf169f57a89))
+
+
+### Documentation
+
+* move USAGE docs to docs/ and update outdated spawn references ([970a187](https://github.com/first-fluke/oh-my-ag/commit/970a18722f58a32531107b77cf0124459dc447d8))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.11.0 ([4f12317](https://github.com/first-fluke/oh-my-ag/commit/4f12317e5a11575aa87b25774794282af71f04e6))
+
+## [1.11.0](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.10.0...oh-my-ag-v1.11.0) (2026-02-08)
+
+
+### Features
+
+* **agent:** improve spawn UX with auto-detect workspace, inline prompt, and -w option ([473c32b](https://github.com/first-fluke/oh-my-ag/commit/473c32b170b784da464bb6f81573c1f9d39a3329))
+* **install,doctor:** add git rerere auto-detection and setup ([f027fc0](https://github.com/first-fluke/oh-my-ag/commit/f027fc033a1430e7731aefa07f6e2a78cfab9b68))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.10.0 ([40badde](https://github.com/first-fluke/oh-my-ag/commit/40baddef05b50b4c74aa9b08215351d39b17e210))
+
+## [1.10.0](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.9.3...oh-my-ag-v1.10.0) (2026-02-07)
+
+
+### Features
+
+* **bridge:** migrate from SSE to Streamable HTTP transport ([16ad162](https://github.com/first-fluke/oh-my-ag/commit/16ad162d5de1ec8053f6de54d0081206ce938daa))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.9.3 ([8cbe854](https://github.com/first-fluke/oh-my-ag/commit/8cbe8544e8570eadc9db61f8a1dedae1214af313))
+
+## [1.9.3](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.9.2...oh-my-ag-v1.9.3) (2026-02-07)
+
+
+### Bug Fixes
+
+* **transport:** migrate MCP transport from SSE to Streamable HTTP ([5c85c32](https://github.com/first-fluke/oh-my-ag/commit/5c85c324c1109fb80fe3c5c2820c656fa2a13859))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.9.2 ([b01ebbb](https://github.com/first-fluke/oh-my-ag/commit/b01ebbbcd4c83a67ffc544cfd2ed9944b0d8b04d))
+
+## [1.9.2](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.9.1...oh-my-ag-v1.9.2) (2026-02-07)
+
+
+### Documentation
+
+* remove redundant Skills Overview section ([efc4665](https://github.com/first-fluke/oh-my-ag/commit/efc4665b6839dc118ad5fa28758c84c43fc8c484))
+* sort CLI commands alphabetically and simplify ([9d2086d](https://github.com/first-fluke/oh-my-ag/commit/9d2086d6c0af8424c94fa01fbd0f0d79129743f4))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.9.1 ([b8a2d71](https://github.com/first-fluke/oh-my-ag/commit/b8a2d719e328edcf95bd122df0b05f22047aee18))
+
+## [1.9.1](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.9.0...oh-my-ag-v1.9.1) (2026-02-07)
+
+
+### Bug Fixes
+
+* **bridge:** add missing --transport sse flag and harden startup checks ([98a0019](https://github.com/first-fluke/oh-my-ag/commit/98a00199da2578aa01f0e53aae1adcad430e571c))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.9.0 ([0db8e78](https://github.com/first-fluke/oh-my-ag/commit/0db8e78e91d476b6b05b075b7c1cf9d355241d32))
+
+## [1.9.0](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.8.1...oh-my-ag-v1.9.0) (2026-02-07)
+
+
+### Features
+
+* add usage command with model quota bar chart ([a6ddff2](https://github.com/first-fluke/oh-my-ag/commit/a6ddff2715e79e42083cc29eaecb154c79edaa97))
+* **usage:** add flow credits, tier, default model, image support info ([b20224c](https://github.com/first-fluke/oh-my-ag/commit/b20224c94518f4c02e6a2dff6db3e4ab7a56b39e))
+
+
+### Documentation
+
+* add usage command to CLI Commands section ([7d89582](https://github.com/first-fluke/oh-my-ag/commit/7d89582eaf7799c0aeecb47b41c427a4ee4286b7))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.8.1 ([f3d6ca7](https://github.com/first-fluke/oh-my-ag/commit/f3d6ca71a78fb6185dcd1e0c54e61ec3b74d2c08))
+
+## [1.8.1](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.8.0...oh-my-ag-v1.8.1) (2026-02-04)
+
+
+### Documentation
+
+* improve architecture diagram and fix README inconsistencies ([ad87c9d](https://github.com/first-fluke/oh-my-ag/commit/ad87c9dbc12ca9e7e45e4e8debf54f536dce441e))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.8.0 ([897a476](https://github.com/first-fluke/oh-my-ag/commit/897a476e803daaabf6279f5ecf2e52ec98b075a2))
+
+## [1.8.0](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.7.1...oh-my-ag-v1.8.0) (2026-02-04)
+
+
+### Features
+
+* **bridge:** auto-fix missing languages key in Serena project configs ([8d76feb](https://github.com/first-fluke/oh-my-ag/commit/8d76febf9fdc94cb66b64b3f947d713988f51f60))
+
+
+### Documentation
+
+* add uv as prerequisite for Serena setup ([909c4db](https://github.com/first-fluke/oh-my-ag/commit/909c4db7428b61ba47efd7dd464bff3d54c133fc))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.7.1 ([b7ac12e](https://github.com/first-fluke/oh-my-ag/commit/b7ac12ed3e0a4904094ad0e06bbb4e71d631d799))
+
+## [1.7.1](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.7.0...oh-my-ag-v1.7.1) (2026-02-04)
+
+
+### Documentation
+
+* add Star History section to README files ([cab9cee](https://github.com/first-fluke/oh-my-ag/commit/cab9cee8bae1c0cb0a5767a1b90ae8dc2e74cce7))
+* translate tools.md workflow from Korean to English ([34a0937](https://github.com/first-fluke/oh-my-ag/commit/34a093778eb61410b147f1294b12a070aa80d6bb))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.7.0 ([eec2bb9](https://github.com/first-fluke/oh-my-ag/commit/eec2bb9e75be44b794426931422a2874296aae6b))
+
+## [1.7.0](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.6.1...oh-my-ag-v1.7.0) (2026-02-03)
+
+
+### Features
+
+* add Codex environment configuration and enhance project description in READMEs ([1643099](https://github.com/first-fluke/oh-my-ag/commit/164309926c6dd080b96f317cf463181065d2d8c2))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.6.1 ([bada43d](https://github.com/first-fluke/oh-my-ag/commit/bada43d5066a67a508b3bf79e780a7049fe658be))
+
+## [1.6.1](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.6.0...oh-my-ag-v1.6.1) (2026-02-03)
+
+
+### Miscellaneous
+
+* update `README.ko.md` ([0169671](https://github.com/first-fluke/oh-my-ag/commit/0169671faaae4296e63005438af5095aa63813c0))
+* update prompt-manifest.json for 1.6.0 ([183436f](https://github.com/first-fluke/oh-my-ag/commit/183436fc1b8c2505d74d5335987f6e8cc0cc2553))
+
+## [1.6.0](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.5.8...oh-my-ag-v1.6.0) (2026-02-03)
+
+
+### Features
+
+* improve cli config parsing and memory tooling ([9322a6b](https://github.com/first-fluke/oh-my-ag/commit/9322a6bdc411c437b1f1e6ef3d93c15aa6222187))
+
+
+### Miscellaneous
+
+* update prompt-manifest.json for 1.5.8 ([2d1d3b1](https://github.com/first-fluke/oh-my-ag/commit/2d1d3b149538758ec84cc6dc1059304f6fccba98))
+
 ## [1.5.8](https://github.com/first-fluke/oh-my-ag/compare/oh-my-ag-v1.5.7...oh-my-ag-v1.5.8) (2026-02-02)
 
 

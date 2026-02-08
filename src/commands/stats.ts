@@ -9,6 +9,7 @@ import { dirname, join } from "node:path";
 import * as p from "@clack/prompts";
 import pc from "picocolors";
 import { getGitStats } from "../lib/git.js";
+import { getCompletedTasksCount, getSessionMeta } from "../lib/memory.js";
 import type { Metrics } from "../types/index.js";
 
 function getMetricsPath(cwd: string): string {
@@ -97,9 +98,44 @@ export async function stats(
   const metrics = loadMetrics(cwd);
   const gitStats = getGitStats(cwd);
   const detectedSkills = detectSkillsFromMemories(cwd);
+  const completedTasks = getCompletedTasksCount(cwd);
+  const sessionMeta = getSessionMeta(cwd);
+  const sessionStartedAt = sessionMeta.startedAt
+    ? new Date(sessionMeta.startedAt)
+    : null;
+  const sessionDurationSeconds =
+    sessionStartedAt && !Number.isNaN(sessionStartedAt.getTime())
+      ? Math.max(
+          0,
+          Math.floor((Date.now() - sessionStartedAt.getTime()) / 1000),
+        )
+      : 0;
 
   for (const [skill, count] of Object.entries(detectedSkills)) {
     metrics.skillsUsed[skill] = (metrics.skillsUsed[skill] || 0) + count;
+  }
+
+  if (completedTasks > metrics.tasksCompleted) {
+    metrics.tasksCompleted = completedTasks;
+  }
+
+  if (sessionMeta.id) {
+    const isTerminalStatus = ["completed", "failed", "aborted"].includes(
+      sessionMeta.status || "",
+    );
+    const isNewTerminal =
+      isTerminalStatus &&
+      (metrics.lastSessionId !== sessionMeta.id ||
+        metrics.lastSessionStatus !== sessionMeta.status);
+
+    if (isNewTerminal && sessionDurationSeconds > 0) {
+      metrics.totalSessionTime += sessionDurationSeconds;
+    }
+
+    metrics.lastSessionId = sessionMeta.id;
+    metrics.lastSessionStatus = sessionMeta.status;
+    metrics.lastSessionStarted = sessionMeta.startedAt;
+    metrics.lastSessionDuration = sessionDurationSeconds;
   }
 
   metrics.filesChanged += gitStats.filesChanged;

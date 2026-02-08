@@ -41,8 +41,8 @@ scope:
 # Co-Author settings
 co_author:
   enabled: true
-  name: "Claude Opus 4.5"
-  email: "noreply@anthropic.com"
+  name: "First Fluke"
+  email: "our.first.fluke@gmail.com"
 
 # Forbidden file patterns (commit warnings)
 forbidden_patterns:

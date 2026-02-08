@@ -1,11 +1,13 @@
 # oh-my-ag: Antigravity를 위한 멀티 에이전트 오케스트레이터
 
-Google Antigravity IDE용 전문 에이전트 스킬 모음. PM, Frontend, Backend, Mobile, QA, Debug 전문 에이전트가 Agent Manager, CLI 기반 SubAgent Orchestrator, 실시간 Serena Memory 대시보드를 통해 협업합니다.
+Google Antigravity를 위한 궁극의 멀티 에이전트 프레임워크.
+
+**Serena Memory**를 통해 6개의 전문 도메인 에이전트(PM, Frontend, Backend, Mobile, QA, Debug)를 조율하세요. 병렬 CLI 실행, 실시간 관측 대시보드, 제로 설정(zero-config) 방식의 점진적 스킬 로딩을 지원합니다. 에이전트 기반 코딩을 위해 모든 것이 준비된 올인원 솔루션입니다.
 
 > **마음에 드셨나요?** 스타 눌러주세요!
 >
 > ```bash
-> gh repo star first-fluke/oh-my-ag
+> gh api --method PUT /user/starred/first-fluke/oh-my-ag
 > ```
 >
 > **풀스택 개발이 처음이신가요?** 최적화된 스타터 템플릿으로 시작필보세요:
@@ -18,32 +20,73 @@ Google Antigravity IDE용 전문 에이전트 스킬 모음. PM, Frontend, Backe
 
 ## 목차
 
+- [아키텍처](#아키텍처)
 - [이게 뭔가요?](#이게-뭔가요)
 - [빠른 시작](#빠른-시작)
 - [동작 원리](#동작-원리)
 - [실시간 대시보드](#실시간-대시보드)
-- [프로젝트 구조](#프로젝트-구조)
 - [스킬 아키텍처](#스킬-아키텍처)
-- [스킬 개요](#스킬-개요)
 - [CLI 명령어](#cli-명령어)
 - [문제 해결](#문제-해결)
+- [후원하기](#후원하기)
+- [중앙 레지스트리](#중앙-레지스트리-멀티-레포-설정용)
+- [후원하기](#후원하기)
 - [라이선스](#라이선스)
 
 ## 이게 뭔가요?
 
 멀티 에이전트 협업 개발을 위한 **Antigravity Skills** 모음입니다. 작업을 전문 에이전트에게 분배합니다:
 
-| 에이전트 | 전문 분야 |
-|---------|----------|
-| **Workflow Guide** | 복잡한 멀티 에이전트 프로젝트 조율 |
-| **PM Agent** | 요구사항 분석, 태스크 분해, 아키텍처 설계 |
-| **Frontend Agent** | React/Next.js, TypeScript, Tailwind CSS |
-| **Backend Agent** | FastAPI, PostgreSQL, JWT 인증 |
-| **Mobile Agent** | Flutter 크로스 플랫폼 개발 |
-| **QA Agent** | OWASP Top 10 보안, 성능, 접근성 감사 |
-| **Debug Agent** | 버그 진단, 근본 원인 분석, 회귀 테스트 |
-| **Orchestrator** | CLI 기반 병렬 에이전트 실행 + Serena Memory |
-| **Commit** | Conventional Commits 규칙 기반 커밋 관리 |
+| 에이전트 | 전문 분야 | 발동 키워드 |
+|---------|----------|-----------|
+| **Workflow Guide** | 복잡한 멀티 에이전트 프로젝트 조율 | "멀티 도메인", "복잡한 프로젝트" |
+| **PM Agent** | 요구사항 분석, 태스크 분해, 아키텍처 설계 | "기획", "분석", "뭘 만들어야 할까" |
+| **Frontend Agent** | React/Next.js, TypeScript, Tailwind CSS | "UI", "컴포넌트", "스타일링" |
+| **Backend Agent** | FastAPI, PostgreSQL, JWT 인증 | "API", "데이터베이스", "인증" |
+| **Mobile Agent** | Flutter 크로스 플랫폼 개발 | "모바일 앱", "iOS/Android" |
+| **QA Agent** | OWASP Top 10 보안, 성능, 접근성 감사 | "보안 검토", "감사", "성능 확인" |
+| **Debug Agent** | 버그 진단, 근본 원인 분석, 회귀 테스트 | "버그", "에러", "크래시" |
+| **Orchestrator** | CLI 기반 병렬 에이전트 실행 + Serena Memory | "에이전트 실행", "병렬 실행" |
+| **Commit** | Conventional Commits 규칙 기반 커밋 관리 | "커밋", "변경사항 저장" |
+
+## 아키텍처
+
+```mermaid
+flowchart TD
+    subgraph Workflows["워크플로우"]
+        direction TB
+        W1["/coordinate"]
+        W2["/orchestrate"]
+        W3["/plan"]
+        W4["/review"]
+        W5["/debug"]
+    end
+
+    subgraph Orchestration["오케스트레이션"]
+        direction TB
+        PM[pm-agent]
+        WF[workflow-guide]
+        ORC[orchestrator]
+    end
+
+    subgraph Domain["도메인 에이전트"]
+        direction TB
+        FE[frontend-agent]
+        BE[backend-agent]
+        MB[mobile-agent]
+    end
+
+    subgraph Quality["품질"]
+        direction TB
+        QA[qa-agent]
+        DBG[debug-agent]
+    end
+
+    Workflows --> Orchestration
+    Orchestration --> Domain
+    Domain --> Quality
+    Quality --> CMT([commit])
+```
 
 ## 빠른 시작
 
@@ -51,12 +94,16 @@ Google Antigravity IDE용 전문 에이전트 스킬 모음. PM, Frontend, Backe
 
 - **Google Antigravity** (2026+)
 - **Bun** (CLI 및 대시보드용)
+- **uv** (Serena 설정용)
 
 ### 옵션 1: 대화형 CLI (권장)
 
 ```bash
 # bun이 없으면 먼저 설치:
 # curl -fsSL https://bun.sh/install | bash
+
+# uv가 없으면 먼저 설치:
+# curl -LsSf https://astral.sh/uv/install.sh | sh
 
 bunx oh-my-ag
 ```
@@ -88,17 +135,7 @@ bun install --global oh-my-ag
 | Codex | `bun install --global @openai/codex` | `codex auth` |
 | Qwen | `bun install --global @qwen-code/qwen` | `qwen auth` |
 
-### 옵션 3: 클론 & 열기
-
-```bash
-git clone <repository-url>
-cd oh-my-ag
-antigravity open .
-```
-
-Antigravity가 `.agent/skills/`의 스킬을 자동 감지합니다.
-
-### 옵션 4: 기존 프로젝트에 통합하기
+### 옵션 3: 기존 프로젝트에 통합하기
 
 **권장 방법 (CLI):**
 
@@ -177,14 +214,7 @@ antigravity open .
 
 ### 3. 대시보드로 모니터링
 
-```bash
-# bun이 없으면 먼저 설치:
-# curl -fsSL https://bun.sh/install | bash
-
-bunx oh-my-ag dashboard      # 터미널 대시보드 (실시간)
-bunx oh-my-ag dashboard:web  # 웹 대시보드 (브라우저 UI)
-# → http://localhost:9847
-```
+대시보드 설정과 상세 사용법은 [`docs/USAGE.ko.md`](./docs/USAGE.ko.md#실시간-대시보드)를 참고하세요.
 
 ## 동작 원리
 
@@ -212,12 +242,18 @@ bunx oh-my-ag dashboard:web  # 웹 대시보드 (브라우저 UI)
 프로그래밍 방식의 병렬 실행:
 
 ```bash
-# 단일 에이전트
-oh-my-ag agent:spawn backend "인증 API 구현" session-01 ./backend
+# 인라인 프롬프트 (workspace 자동 탐지)
+oh-my-ag agent:spawn backend "인증 API 구현" session-01
 
-# 병렬 실행 (orchestrator 스킬 사용 시)
-oh-my-ag agent:spawn backend "인증 API 구현" session-01 ./backend &
-oh-my-ag agent:spawn frontend "로그인 폼 생성" session-01 ./frontend &
+# 파일에서 프롬프트 읽기
+oh-my-ag agent:spawn backend .agent/tasks/backend-auth.json session-01
+
+# 명시적 workspace 지정
+oh-my-ag agent:spawn backend "인증 API 구현" session-01 -w ./apps/api
+
+# 병렬 실행
+oh-my-ag agent:spawn backend "인증 API 구현" session-01 &
+oh-my-ag agent:spawn frontend "로그인 폼 생성" session-01 &
 wait
 ```
 
@@ -269,104 +305,12 @@ Orchestrator가 `.serena/memories/`에 구조화된 상태를 기록합니다:
 
 ## 실시간 대시보드
 
-### 터미널 대시보드
+대시보드는 orchestrator 세션 모니터링을 위한 선택 기능입니다.
 
-```bash
-# bun이 없으면 먼저 설치:
-# curl -fsSL https://bun.sh/install | bash
+- 터미널: `bunx oh-my-ag dashboard`
+- 웹: `bunx oh-my-ag dashboard:web` (`http://localhost:9847`)
 
-bunx oh-my-ag dashboard
-```
-
-`.serena/memories/`를 감시하여 터미널에 실시간 상태 테이블을 표시합니다:
-
-```
-╔════════════════════════════════════════════════════════╗
-║  Serena Memory Dashboard                              ║
-║  Session: session-20260128-143022 [RUNNING]           ║
-╠════════════════════════════════════════════════════════╣
-║  Agent        Status        Turn   Task               ║
-║  ──────────   ──────────    ────   ──────────         ║
-║  backend      ● running      12   JWT Auth API        ║
-║  frontend     ✓ completed    18   Login UI            ║
-║  qa           ○ blocked       -   Security Review     ║
-╠════════════════════════════════════════════════════════╣
-║  Latest Activity:                                     ║
-║  [backend] Turn 12 - Added tests and rate limit       ║
-║  [frontend] Completed - All criteria met              ║
-╠════════════════════════════════════════════════════════╣
-║  Updated: 2026-01-28 14:32:05  |  Ctrl+C to exit     ║
-╚════════════════════════════════════════════════════════╝
-```
-
-### 웹 대시보드
-
-```bash
-bunx oh-my-ag dashboard:web
-# → http://localhost:9847
-```
-
-기능:
-
-- WebSocket 실시간 푸시 (폴링 없음)
-- 연결 끊김 시 자동 재연결
-- 볼라색 Serena 테마 UI
-- 세션 상태, 에이전트 테이블, 활동 로그
-- chokidar 기반 이벤트 드리븐 파일 감시 (크로스 플랫폼)
-
-## 프로젝트 구조
-
-```
-.
-├── .agent/
-│   ├── config/
-│   │   └── user-preferences.yaml   # 언어, 타임존, CLI 매핑
-│   ├── workflows/
-│   │   ├── coordinate.md           # /coordinate (UI 기반 멀티 에이전트 조율)
-│   │   ├── orchestrate.md          # /orchestrate (CLI 자동 병렬 실행)
-│   │   ├── plan.md                 # /plan (PM 태스크 분해)
-│   │   ├── review.md               # /review (전체 QA 파이프라인)
-│   │   ├── debug.md                # /debug (구조화된 버그 수정)
-│   │   ├── setup.md                # /setup (CLI & MCP 설정)
-│   │   └── tools.md                # /tools (MCP 도구 관리)
-│   └── skills/
-│       ├── _shared/                    # 공통 리소스 (스킬 아님)
-│       │   ├── serena-memory-protocol.md
-│       │   ├── common-checklist.md
-│       │   ├── skill-routing.md
-│       │   ├── context-loading.md
-│       │   ├── context-budget.md
-│       │   ├── reasoning-templates.md
-│       │   ├── clarification-protocol.md
-│       │   ├── difficulty-guide.md
-│       │   ├── lessons-learned.md
-│       │   ├── verify.sh
-│       │   └── api-contracts/
-│       ├── workflow-guide/             # 멀티 에이전트 조율
-│       ├── pm-agent/                   # 프로덕트 매니저
-│       ├── frontend-agent/             # React/Next.js
-│       ├── backend-agent/              # FastAPI
-│       ├── mobile-agent/               # Flutter
-│       ├── qa-agent/                   # 보안 & QA
-│       ├── debug-agent/                # 버그 수정
-│       ├── orchestrator/               # CLI 기반 서브에이전트 실행
-│       └── commit/                     # Conventional Commits 스킬
-│       # 각 스킬 구조:
-│       #   SKILL.md              (~40줄, 토큰 최적화)
-│       #   resources/
-│       #     ├── execution-protocol.md  (Chain-of-thought 단계)
-│       #     ├── examples.md            (Few-shot 입출력 예시)
-│       #     ├── checklist.md           (셀프 검증)
-│       #     ├── error-playbook.md      (장애 복구)
-│       #     ├── tech-stack.md          (기술 스택 상세)
-│       #     └── snippets.md           (코드 스니펫)
-├── .serena/
-│   └── memories/                   # 런타임 상태 (gitignore 처리됨)
-├── package.json
-├── README.md                       # 영문 가이드
-├── README.ko.md                    # 한글 가이드 (이 파일)
-└── USAGE.md                        # 상세 사용 가이드
-```
+요구사항, 화면, 상세 동작은 [`docs/USAGE.ko.md`](./docs/USAGE.ko.md#실시간-대시보드)를 참고하세요.
 
 ## 스킬 아키텍처
 
@@ -408,69 +352,20 @@ bunx oh-my-ag dashboard:web
 | `tech-stack.md` | 상세 기술 사양 |
 | `snippets.md` | 바로 사용 가능한 코드 패턴 |
 
-## 스킬 개요
-
-### workflow-guide
-
-**발동 조건**: 복잡한 멀티 도메인 요청
-**역할**: PM, Frontend, Backend, Mobile, QA 에이전트 조율 안내
-
-### pm-agent
-
-**발동 조건**: "기획해줘", "분석해줘", "뭘 만들어야 할까"
-**산출물**: `.agent/plan.json` (태스크, 우선순위, 의존성)
-
-### frontend-agent
-
-**발동 조건**: UI, 컴포넌트, 스타일링, 클라이언트 로직
-**기술 스택**: Next.js 14, TypeScript, Tailwind CSS, shadcn/ui
-
-### backend-agent
-
-**발동 조건**: API, 데이터베이스, 인증
-**기술 스택**: FastAPI, SQLAlchemy, PostgreSQL, Redis, JWT
-
-### mobile-agent
-
-**발동 조건**: 모바일 앱, iOS/Android
-**기술 스택**: Flutter 3.19+, Dart, Riverpod
-
-### qa-agent
-
-**발동 조건**: "보안 검토해줘", "성능 확인", "감사해줘"
-**검사 항목**: OWASP Top 10, Lighthouse, WCAG 2.1 AA
-
-### debug-agent
-
-**발동 조건**: 버그 리포트, 에러 메시지, 크래시
-**산출물**: 수정된 코드, 회귀 테스트, 버그 문서
-
-### orchestrator
-
-**발동 조건**: 프로그래밍 방식의 서브에이전트 실행
-**지원 CLI**: Gemini, Claude, Codex, Qwen (설정 가능)
-
-### commit
-
-**발동 조건**: "커밋해줘", "commit", "변경사항 저장"
-**형식**: Conventional Commits + Co-Author 태그
-**설정**: `.agent/skills/commit/config/commit-config.yaml`
-
 ## CLI 명령어
 
 ```bash
 bunx oh-my-ag                # 대화형 스킬 설치
-bunx oh-my-ag doctor         # 설정 확인 & 누락된 스킬 보강
-bunx oh-my-ag doctor --json  # CI/CD용 JSON 출력
-bunx oh-my-ag update         # 스킬을 최신 버전으로 업데이트
-bunx oh-my-ag stats          # 생산성 메트릭 조회
-bunx oh-my-ag stats --reset  # 메트릭 초기화
-bunx oh-my-ag retro          # 세션 회고 (배운 점 & 다음 단계)
+bunx oh-my-ag bridge         # MCP stdio - SSE 브릿지 (Serena용)
 bunx oh-my-ag dashboard      # 터미널 실시간 대시보드
 bunx oh-my-ag dashboard:web  # 웹 대시보드 (http://localhost:9847)
-bunx oh-my-ag dashboard:web  # 웹 대시보드 (http://localhost:9847)
-bunx oh-my-ag bridge         # MCP stdio - SSE 브릿지 (Serena용)
+bunx oh-my-ag doctor         # 설정 확인 & 누락된 스킬 보강
 bunx oh-my-ag help           # 도움말 표시
+bunx oh-my-ag memory:init    # Serena 메모리 스키마 초기화
+bunx oh-my-ag retro          # 세션 회고 (배운 점 & 다음 단계)
+bunx oh-my-ag stats          # 생산성 메트릭 조회
+bunx oh-my-ag update         # 스킬을 최신 버전으로 업데이트
+bunx oh-my-ag usage          # 모델 사용량 쿼터 조회
 ```
 
 ## 문제 해결
@@ -491,6 +386,111 @@ bunx oh-my-ag help           # 도움말 표시
 2. 다른 에이전트의 산출물을 참조하여 재생성
 3. QA Agent로 최종 일관성 검사
 
+## 중앙 레지스트리 (멀티-레포 설정용)
+
+이 저장소는 에이전트 스킬의 **중앙 레지스트리**로 사용할 수 있으며, 여러 컨슈머 프로젝트가 버전 관리된 업데이트를 일관되게 동기화할 수 있습니다.
+
+### 아키텍처
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  중앙 레지스트리 (이 저장소)                            │
+│  • release-please 기반 자동 버저닝                      │
+│  • CHANGELOG.md 자동 생성                               │
+│  • prompt-manifest.json (버전/파일/체크섬)               │
+│  • agent-skills.tar.gz 릴리스 아티팩트                  │
+└─────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│  컨슈머 저장소                                           │
+│  • .agent-registry.yaml 기반 버전 고정                  │
+│  • 새 버전 감지 시 PR 생성 (자동 머지 없음)             │
+│  • 재사용 가능한 동기화 액션                             │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 레지스트리 유지보수자용
+
+[release-please](https://github.com/googleapis/release-please)로 릴리스가 자동화됩니다:
+
+1. **Conventional Commits**: `feat:`, `fix:`, `chore:` 등 접두사 사용
+2. **Release PR**: `main` 브랜치에 푸시하면 자동 생성/업데이트
+3. **Release**: Release PR을 머지하면 GitHub Release 생성:
+   - `CHANGELOG.md` (자동 생성)
+   - `prompt-manifest.json` (파일 목록 + SHA256 체크섬)
+   - `agent-skills.tar.gz` (`.agent/` 디렉토리 압축본)
+
+### 컨슈머 프로젝트용
+
+1. `docs/consumer-templates/`의 템플릿을 프로젝트로 복사:
+
+   ```bash
+   # 설정 파일
+   cp docs/consumer-templates/.agent-registry.yaml /path/to/your-project/
+
+   # GitHub 워크플로우
+   cp docs/consumer-templates/check-registry-updates.yml /path/to/your-project/.github/workflows/
+   cp docs/consumer-templates/sync-agent-registry.yml /path/to/your-project/.github/workflows/
+   ```
+
+2. `.agent-registry.yaml`에서 원하는 버전을 고정:
+
+   ```yaml
+   registry:
+     repo: first-fluke/oh-my-ag
+     version: "1.2.0"  # 특정 버전 고정
+   ```
+
+3. 워크플로우 구성:
+   - `check-registry-updates.yml`: 주간 버전 확인 후 PR 생성
+   - `sync-agent-registry.yml`: 버전 변경 시 `.agent/` 동기화
+
+**중요**: 자동 머지는 의도적으로 비활성화되어 있습니다. 모든 버전 업데이트는 수동 검토가 필요합니다.
+
+### 재사용 가능한 액션 사용
+
+컨슈머 프로젝트에서 동기화 액션을 직접 사용할 수 있습니다:
+
+```yaml
+- uses: first-fluke/oh-my-ag/.github/actions/sync-agent-registry@main
+  with:
+    registry-repo: first-fluke/oh-my-ag
+    version: '1.2.0'  # 또는 'latest'
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+## 후원하기
+
+이 프로젝트는 후원자분들의 지원으로 유지됩니다.
+
+<a href="https://github.com/sponsors/first-fluke">
+  <img src="https://img.shields.io/badge/후원하기-♥-ea4aaa?style=for-the-badge" alt="Sponsor" />
+</a>
+<a href="https://buymeacoffee.com/firstfluke">
+  <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-☕-FFDD00?style=for-the-badge" alt="Buy Me a Coffee" />
+</a>
+
+### 🚀 Champion
+
+<!-- Champion 티어 ($100/월) 로고 -->
+
+### 🛸 Booster
+
+<!-- Booster 티어 ($30/월) 로고 -->
+
+### ☕ Contributor
+
+<!-- Contributor 티어 ($10/월) 이름 -->
+
+[후원자 되기 →](https://github.com/sponsors/first-fluke)
+
+전체 후원자 목록은 [SPONSORS.md](./SPONSORS.md)를 참고하세요.
+
+## 스타 히스토리
+
+[![Star History Chart](https://api.star-history.com/svg?repos=first-fluke/oh-my-ag&type=date&legend=bottom-right)](https://www.star-history.com/#first-fluke/oh-my-ag&type=date&legend=bottom-right)
+
 ## 라이선스
 
 MIT
@@ -501,8 +501,10 @@ MIT
 |------|------|------|
 | [README.md](./README.md) | 사용자 | 프로젝트 개요 (영문) |
 | [README.ko.md](./README.ko.md) | 사용자 | 프로젝트 개요 (한글) |
-| [USAGE.md](./USAGE.md) | 사용자 | 스킬 사용 방법 (영문) |
-| [USAGE.ko.md](./USAGE.ko.md) | 사용자 | 스킬 사용 방법 (한글) |
+| [USAGE.md](./docs/USAGE.md) | 사용자 | 스킬 사용 방법 (영문) |
+| [USAGE.ko.md](./docs/USAGE.ko.md) | 사용자 | 스킬 사용 방법 (한글) |
+| [project-structure.md](./docs/project-structure.md) | 사용자 | 전체 프로젝트 디렉토리 구조 (영문) |
+| [project-structure.ko.md](./docs/project-structure.ko.md) | 사용자 | 전체 프로젝트 디렉토리 구조 (한글) |
 | [AGENT_GUIDE.md](./AGENT_GUIDE.md) | 개발자 | **기존 프로젝트에 통합하는 방법** |
 
 ---

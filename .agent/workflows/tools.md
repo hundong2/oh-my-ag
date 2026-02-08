@@ -12,84 +12,84 @@ description: Manage MCP tools with natural language commands — list, enable, d
 
 ## Step 1: Show Current Status
 
-1. Read `.agent/mcp.json` (프로젝트 설정)
-2. Read `~/.gemini/settings.json` if exists (Gemini CLI 전역 설정) — optional
-3. 각 MCP 서버별 상태 표시:
-   - `available_tools: null` → "전체 활성화 (제한 없음)"
-   - `available_tools: [...]` → "N개 도구 활성화" + 목록
-4. `toolGroups` 정의가 있으면 사용 가능한 그룹 목록 표시
+1. Read `.agent/mcp.json` (project configuration)
+2. Read `~/.gemini/settings.json` if exists (Gemini CLI global settings) — optional
+3. Display status for each MCP server:
+   - `available_tools: null` → "All enabled (no restrictions)"
+   - `available_tools: [...]` → "N tools enabled" + list
+4. If `toolGroups` is defined, display available group list
 
-**출력 예시:**
+**Output example:**
 ```
-📋 현재 MCP 도구 상태
+📋 Current MCP Tool Status
 
 [serena]
-- 상태: 전체 활성화 (제한 없음)
-- 사용 가능한 도구: 15개
+- Status: All enabled (no restrictions)
+- Available tools: 15
 
-📦 사용 가능한 도구 그룹:
+📦 Available Tool Groups:
 - memory: read_memory, write_memory, edit_memory, list_memories, delete_memory
 - code-analysis: get_symbols_overview, find_symbol, find_referencing_symbols, search_for_pattern
 - code-edit: replace_symbol_body, insert_after_symbol, insert_before_symbol, rename_symbol
 - file-ops: list_dir, find_file
-- all: 전체 도구 (제한 없음)
+- all: All tools (no restrictions)
 
-무엇을 변경하시겠습니까?
+What would you like to change?
 ```
 
 ---
 
 ## Step 2: Parse User Command
 
-자연어 명령을 해석합니다:
+Parse natural language commands:
 
-| 명령 패턴 | 해석 |
-|---------|-----|
-| "현재 상태", "목록", "보여줘" | Step 1 다시 실행 |
-| "메모리 도구만", "{그룹명}만 활성화" | 해당 그룹 도구만 `available_tools`에 설정 |
-| "{도구명} 비활성화", "{도구명} 끄기" | 해당 도구를 `available_tools`에서 제거 |
-| "전체 활성화", "모두 켜줘", "리셋" | `available_tools: null` 설정 |
-| "{도구1}, {도구2}만 켜줘" | 지정된 도구만 `available_tools`에 설정 |
-| "임시로", "--temp" | 세션 동안만 적용 (Step 3b) |
+| Command Pattern | Interpretation |
+|-----------------|----------------|
+| "current status", "list", "show" | Re-execute Step 1 |
+| "memory tools only", "enable only {group}" | Set only that group's tools in `available_tools` |
+| "disable {tool}", "turn off {tool}" | Remove that tool from `available_tools` |
+| "enable all", "turn on all", "reset" | Set `available_tools: null` |
+| "enable only {tool1}, {tool2}" | Set only specified tools in `available_tools` |
+| "temporarily", "--temp" | Apply for session only (Step 3b) |
 
-**그룹 조합 지원:**
-- "메모리 + 파일 도구" → `memory` + `file-ops` 그룹 병합
-- "코드 분석 빼고 전부" → `all`에서 `code-analysis` 제외
+**Group combination support:**
+- "memory + file tools" → Merge `memory` + `file-ops` groups
+- "all except code analysis" → Exclude `code-analysis` from `all`
 
 ---
 
 ## Step 3: Update Configuration
 
-### Step 3a: 영구 수정 (기본)
+### Step 3a: Permanent Modification (Default)
 
-1. **변경 전/후 diff 표시:**
+1. **Show before/after diff:**
    ```
-   📝 mcp.json 변경 예정:
+   📝 Pending mcp.json changes:
 
-   변경 전:
-   - serena.available_tools: null (전체)
+   Before:
+   - serena.available_tools: null (all)
 
-   변경 후:
+   After:
    - serena.available_tools: ["read_memory", "write_memory", "edit_memory", "list_memories", "delete_memory"]
 
-   적용하시겠습니까? (Y/N)
+   Apply changes? (Y/N)
    ```
 
-2. **사용자 확인 후** `.agent/mcp.json` 수정
+2. **After user confirmation**, modify `.agent/mcp.json`
 
-3. **완료 메시지:**
+3. **Completion message:**
    ```
-   ✅ 완료! 이제 serena는 메모리 도구만 사용 가능합니다.
+   ✅ Done! serena can now only use memory tools.
 
-   ⚠️ 참고: IDE/CLI 재시작 후 완전히 적용됩니다.
-   현재 세션에서는 이전 설정이 계속 적용될 수 있습니다.
+   ⚠️ Note: Changes will fully apply after IDE/CLI restart.
+   Previous settings may continue to apply in current session.
    ```
 
-### Step 3b: 임시 적용 (`--temp` 또는 "임시로")
+### Step 3b: Temporary Application (`--temp` or "temporarily")
 
-세션 동안만 적용되는 임시 설정:
+Temporary settings that apply only during the session:
 
-1. `write_memory`로 `.serena/memories/tool-overrides.md` 생성:
+1. Create `.serena/memories/tool-overrides.md` using `write_memory`:
    ```markdown
    # Tool Overrides (Temporary)
 
@@ -107,75 +107,75 @@ description: Manage MCP tools with natural language commands — list, enable, d
    ```
 
    ## Note
-   이 파일은 임시 설정입니다. 다음 세션에서는 무시됩니다.
-   영구 적용하려면 `/tools` 워크플로우를 `--temp` 없이 실행하세요.
+   This file contains temporary settings. It will be ignored in the next session.
+   To apply permanently, run the `/tools` workflow without `--temp`.
    ```
 
-2. **완료 메시지:**
+2. **Completion message:**
    ```
-   ✅ 임시 적용 완료!
+   ✅ Temporarily applied!
 
-   이 세션에서만 serena는 메모리 도구만 사용합니다.
-   영구 적용하려면 다시 `/tools 메모리만 활성화` (--temp 없이) 실행하세요.
+   serena will only use memory tools for this session.
+   To apply permanently, run `/tools enable memory only` (without --temp).
    ```
 
 ---
 
 ## Step 4: Handle Special Cases
 
-### 알 수 없는 도구명
+### Unknown Tool Name
 ```
-⚠️ '{도구명}'은(는) 알 수 없는 도구입니다.
+⚠️ '{tool_name}' is an unknown tool.
 
-유사한 도구:
+Similar tools:
 - read_memory
 - write_memory
 
-정확한 도구명을 입력해주세요.
+Please enter the exact tool name.
 ```
 
-### 서버 충돌
-여러 MCP 서버가 설정되어 있을 때:
+### Server Conflict
+When multiple MCP servers are configured:
 ```
-📋 여러 MCP 서버가 감지되었습니다:
+📋 Multiple MCP servers detected:
 - serena
 - custom-memory
 
-어떤 서버의 도구를 변경하시겠습니까?
+Which server's tools would you like to modify?
 1. serena
 2. custom-memory
-3. 전체
+3. All
 ```
 
-### 빈 도구 목록
+### Empty Tool List
 ```
-⚠️ available_tools를 빈 배열로 설정하면 해당 서버의 모든 도구가 비활성화됩니다.
-정말 계속하시겠습니까? (Y/N)
+⚠️ Setting available_tools to an empty array will disable all tools for that server.
+Are you sure you want to continue? (Y/N)
 ```
 
 ---
 
 ## Quick Reference
 
-| 명령 | 결과 |
-|-----|-----|
-| `/tools` | 현재 상태 표시 |
-| `/tools 메모리만` | 메모리 도구만 활성화 |
-| `/tools 코드 분석 + 메모리` | 두 그룹 활성화 |
-| `/tools 전체` | 모든 도구 활성화 (리셋) |
-| `/tools read_memory, write_memory만` | 지정 도구만 활성화 |
-| `/tools 코드 편집 비활성화` | 해당 그룹 제거 |
-| `/tools 메모리만 --temp` | 임시 적용 (이 세션만) |
+| Command | Result |
+|---------|--------|
+| `/tools` | Show current status |
+| `/tools memory only` | Enable only memory tools |
+| `/tools code analysis + memory` | Enable both groups |
+| `/tools all` | Enable all tools (reset) |
+| `/tools read_memory, write_memory only` | Enable only specified tools |
+| `/tools disable code edit` | Remove that group |
+| `/tools memory only --temp` | Apply temporarily (this session only) |
 
 ---
 
 ## Runtime Override Protocol
 
-다른 워크플로우가 도구 제한을 확인하는 방법:
+How other workflows check tool restrictions:
 
-1. **워크플로우 시작 시:** `read_memory("tool-overrides.md")` 확인
-2. **오버라이드 존재 시:** 해당 설정을 우선 적용
-3. **없거나 만료 시:** `mcp.json` 설정 사용
+1. **At workflow start:** Check `read_memory("tool-overrides.md")`
+2. **If override exists:** Apply that setting with priority
+3. **If not present or expired:** Use `mcp.json` settings
 
-**Note:** IDE/CLI가 `available_tools`를 직접 지원하지 않는 경우,
-워크플로우 레벨에서 도구 사용을 자체적으로 제한해야 합니다.
+**Note:** If IDE/CLI doesn't directly support `available_tools`,
+tool usage must be self-restricted at the workflow level.

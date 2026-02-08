@@ -5,9 +5,11 @@ import { bridge } from "./commands/bridge.js";
 import { cleanup } from "./commands/cleanup.js";
 import { doctor } from "./commands/doctor.js";
 import { install } from "./commands/install.js";
+import { initMemory } from "./commands/memory.js";
 import { retro } from "./commands/retro.js";
 import { stats } from "./commands/stats.js";
 import { update } from "./commands/update.js";
+import { usage } from "./commands/usage.js";
 import { startDashboard } from "./dashboard.js";
 import { startTerminalDashboard } from "./terminal-dashboard.js";
 
@@ -35,6 +37,15 @@ program
   .description("Start web dashboard on http://localhost:9847")
   .action(() => {
     startDashboard();
+  });
+
+program
+  .command("usage")
+  .description("Show model usage quotas (connects to local Antigravity IDE)")
+  .option("--json", "Output as JSON")
+  .option("--raw", "Dump raw RPC response")
+  .action((options) => {
+    usage(options.json, options.raw).catch(console.error);
   });
 
 program
@@ -81,16 +92,30 @@ program
 
 program
   .command("bridge [url]")
-  .description("Bridge MCP stdio to SSE (for Serena)")
+  .description("Bridge MCP stdio to Streamable HTTP (for Serena)")
   .action((url) => {
     bridge(url).catch(console.error);
   });
 
 program
-  .command("agent:spawn <agent-id> <prompt-file> <session-id> <workspace>")
-  .description("Spawn a subagent (wraps gemini with logging and PID tracking)")
-  .action((agentId, promptFile, sessionId, workspace) => {
-    spawnAgent(agentId, promptFile, sessionId, workspace).catch(console.error);
+  .command("agent:spawn <agent-id> <prompt> <session-id>")
+  .description("Spawn a subagent (prompt can be inline text or a file path)")
+  .option(
+    "-v, --vendor <vendor>",
+    "CLI vendor override (gemini/claude/codex/qwen)",
+  )
+  .option(
+    "-w, --workspace <path>",
+    "Working directory for the agent (auto-detected if omitted)",
+  )
+  .action((agentId, prompt, sessionId, options) => {
+    spawnAgent(
+      agentId,
+      prompt,
+      sessionId,
+      options.workspace || ".",
+      options.vendor,
+    ).catch(console.error);
   });
 
 program
@@ -99,6 +124,15 @@ program
   .option("-r, --root <path>", "Root path for memory checks", process.cwd())
   .action((sessionId, agentIds, options) => {
     checkStatus(sessionId, agentIds, options.root).catch(console.error);
+  });
+
+program
+  .command("memory:init")
+  .description("Initialize Serena memory schema in .serena/memories")
+  .option("--json", "Output as JSON")
+  .option("--force", "Overwrite empty or existing schema files")
+  .action((options) => {
+    initMemory(options.json, options.force).catch(console.error);
   });
 
 program.parse();

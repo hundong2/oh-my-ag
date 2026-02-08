@@ -26,7 +26,6 @@ vendors:
     prompt_flag: "-p"
     output_format_flag: "--output-format"
     output_format: "json"
-    auto_approve_flag: "--dangerously-skip-permissions"
     model_flag: "--model"
     default_model: "sonnet"
     # Additional flags to isolate from global settings
@@ -37,9 +36,9 @@ vendors:
 
   codex:
     command: codex
-    prompt_flag: "-p"
-    output_format_flag: "--output-format"
-    output_format: "json"
+    subcommand: "exec"
+    prompt_flag: "none"
+    output_format_flag: "--json"
     auto_approve_flag: "--full-auto"
     model_flag: "-m"
     default_model: "codex-3"
@@ -51,9 +50,9 @@ vendors:
   qwen:
     command: qwen
     prompt_flag: "-p"
-    output_format_flag: "--format"
+    output_format_flag: "--output-format"
     output_format: "json"
-    auto_approve_flag: "--auto"
+    auto_approve_flag: "--yolo"
     model_flag: "--model"
     default_model: "qwen3-coder"
     response_jq: ".output"

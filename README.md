@@ -2,7 +2,9 @@
 
 [한국어](./README.ko.md)
 
-Professional agent skills for Google Antigravity IDE featuring specialized PM, Frontend, Backend, Mobile, QA, and Debug agents — coordinated through Antigravity's Agent Manager, CLI-based SubAgent Orchestrator, and real-time Serena Memory dashboards.
+The Ultimate Multi-Agent Framework for Google Antigravity.
+
+Orchestrate 6 specialized domain agents (PM, Frontend, Backend, Mobile, QA, Debug) via **Serena Memory**. Features parallel CLI execution, real-time observability dashboards, and zero-config progressive skill loading. The batteries-included solution for agentic coding.
 
 > **Like this project?** Give it a star!
 >
@@ -25,63 +27,67 @@ Professional agent skills for Google Antigravity IDE featuring specialized PM, F
 - [Quick Start](#quick-start)
 - [How It Works](#how-it-works)
 - [Real-time Dashboards](#real-time-dashboards)
-- [Project Structure](#project-structure)
 - [Skill Architecture](#skill-architecture)
-- [Skills Overview](#skills-overview)
 - [CLI Commands](#cli-commands)
 - [Troubleshooting](#troubleshooting)
 - [Central Registry](#central-registry-for-multi-repo-setup)
+- [Sponsors](#sponsors)
 - [License](#license)
 
 ## Architecture
 
 ```mermaid
-flowchart TB
-    subgraph Coordination["🎯 Coordination"]
-        PM[pm-agent<br/>Task Decomposition]
-        WF[workflow-guide<br/>Manual Orchestration]
-        ORC[orchestrator<br/>Parallel Execution]
+flowchart TD
+    subgraph Workflows["Workflows"]
+        direction TB
+        W1["/coordinate"]
+        W2["/orchestrate"]
+        W3["/plan"]
+        W4["/review"]
+        W5["/debug"]
     end
 
-    subgraph Domain["💻 Domain Agents"]
-        FE[frontend-agent<br/>React/Next.js]
-        BE[backend-agent<br/>FastAPI/Python]
-        MB[mobile-agent<br/>Flutter/Dart]
+    subgraph Orchestration["Orchestration"]
+        direction TB
+        PM[pm-agent]
+        WF[workflow-guide]
+        ORC[orchestrator]
     end
 
-    subgraph Quality["✅ Quality"]
-        QA[qa-agent<br/>Security/A11y/Perf]
-        DBG[debug-agent<br/>Bug Fixing]
+    subgraph Domain["Domain Agents"]
+        direction TB
+        FE[frontend-agent]
+        BE[backend-agent]
+        MB[mobile-agent]
     end
 
-    subgraph Utility["🔧 Utility"]
-        CMT[commit<br/>Conventional Commits]
+    subgraph Quality["Quality"]
+        direction TB
+        QA[qa-agent]
+        DBG[debug-agent]
     end
 
-    PM -->|API Contracts| FE & BE & MB
-    ORC -->|Spawns| FE & BE & MB
-    WF -->|Coordinates| FE & BE & MB
-    FE & BE & MB -->|Review| QA
-    QA -->|Issues| DBG
-    DBG -->|Fix| FE & BE & MB
-    FE & BE & MB -->|Changes| CMT
+    Workflows --> Orchestration
+    Orchestration --> Domain
+    Domain --> Quality
+    Quality --> CMT([commit])
 ```
 
 ## What Is This?
 
 A collection of **Antigravity Skills** enabling collaborative multi-agent development. Work is distributed across expert agents:
 
-| Agent | Specialization |
-|-------|---------------|
-| **Workflow Guide** | Coordinates complex multi-agent projects |
-| **PM Agent** | Requirements analysis, task decomposition, architecture |
-| **Frontend Agent** | React/Next.js, TypeScript, Tailwind CSS |
-| **Backend Agent** | FastAPI, PostgreSQL, JWT authentication |
-| **Mobile Agent** | Flutter cross-platform development |
-| **QA Agent** | OWASP Top 10 security, performance, accessibility |
-| **Debug Agent** | Bug diagnosis, root cause analysis, regression tests |
-| **Orchestrator** | CLI-based parallel agent execution with Serena Memory |
-| **Commit** | Conventional Commits with project-specific rules |
+| Agent | Specialization | Triggers |
+|-------|---------------|----------|
+| **Workflow Guide** | Coordinates complex multi-agent projects | "multi-domain", "complex project" |
+| **PM Agent** | Requirements analysis, task decomposition, architecture | "plan", "break down", "what should we build" |
+| **Frontend Agent** | React/Next.js, TypeScript, Tailwind CSS | "UI", "component", "styling" |
+| **Backend Agent** | FastAPI, PostgreSQL, JWT authentication | "API", "database", "authentication" |
+| **Mobile Agent** | Flutter cross-platform development | "mobile app", "iOS/Android" |
+| **QA Agent** | OWASP Top 10 security, performance, accessibility | "review security", "audit", "check performance" |
+| **Debug Agent** | Bug diagnosis, root cause analysis, regression tests | "bug", "error", "crash" |
+| **Orchestrator** | CLI-based parallel agent execution with Serena Memory | "spawn agent", "parallel execution" |
+| **Commit** | Conventional Commits with project-specific rules | "commit", "save changes" |
 
 ## Quick Start
 
@@ -89,12 +95,16 @@ A collection of **Antigravity Skills** enabling collaborative multi-agent develo
 
 - **Google Antigravity** (2026+)
 - **Bun** (for CLI and dashboards)
+- **uv** (for Serena setup)
 
 ### Option 1: Interactive CLI (Recommended)
 
 ```bash
 # Install bun if you don't have it:
 # curl -fsSL https://bun.sh/install | bash
+
+# Install uv if you don't have it:
+# curl -LsSf https://astral.sh/uv/install.sh | sh
 
 bunx oh-my-ag
 ```
@@ -126,23 +136,7 @@ You'll also need at least one CLI tool:
 | Codex | `bun install --global @openai/codex` | `codex auth` |
 | Qwen | `bun install --global @qwen-code/qwen` | `qwen auth` |
 
-### Option 3: Using vercel-labs/skills
-
-```bash
-bunx skills add first-fluke/oh-my-ag
-```
-
-### Option 4: Clone & Open
-
-```bash
-git clone https://github.com/first-fluke/oh-my-ag
-cd oh-my-ag
-antigravity open .
-```
-
-Antigravity automatically detects skills in `.agent/skills/`.
-
-### Option 5: Integrate into Existing Project
+### Option 3: Integrate into Existing Project
 
 **Recommended (CLI):**
 
@@ -210,11 +204,7 @@ This creates `.agent/config/user-preferences.yaml` for your project.
 
 ### 3. Monitor with Dashboards
 
-```bash
-bunx oh-my-ag dashboard      # Terminal dashboard (bash)
-bunx oh-my-ag dashboard:web  # Web dashboard (Node.js)
-# → http://localhost:9847
-```
+For dashboard setup and usage details, see [`docs/USAGE.md`](./docs/USAGE.md#real-time-dashboards).
 
 ## How It Works
 
@@ -242,12 +232,18 @@ For complex projects, use Antigravity's **Agent Manager** (Mission Control):
 For programmatic parallel execution:
 
 ```bash
-# Single agent
-oh-my-ag agent:spawn backend "Implement auth API" session-01 ./backend
+# Inline prompt (workspace auto-detected)
+oh-my-ag agent:spawn backend "Implement auth API" session-01
 
-# Parallel agents via orchestrator skill
-oh-my-ag agent:spawn backend "Implement auth API" session-01 ./backend &
-oh-my-ag agent:spawn frontend "Create login form" session-01 ./frontend &
+# Prompt from file
+oh-my-ag agent:spawn backend .agent/tasks/backend-auth.json session-01
+
+# With explicit workspace
+oh-my-ag agent:spawn backend "Implement auth API" session-01 -w ./apps/api
+
+# Parallel agents
+oh-my-ag agent:spawn backend "Implement auth API" session-01 &
+oh-my-ag agent:spawn frontend "Create login form" session-01 &
 wait
 ```
 
@@ -299,101 +295,12 @@ Both dashboards watch these files for real-time monitoring.
 
 ## Real-time Dashboards
 
-### Terminal Dashboard
+Dashboards are optional monitoring tools for orchestrator sessions:
 
-```bash
-bunx oh-my-ag dashboard
-```
+- Terminal: `bunx oh-my-ag dashboard`
+- Web: `bunx oh-my-ag dashboard:web` (`http://localhost:9847`)
 
-Watches `.serena/memories/` and renders a live status table in your terminal:
-
-```
-╔════════════════════════════════════════════════════════╗
-║  Serena Memory Dashboard                              ║
-║  Session: session-20260128-143022 [RUNNING]           ║
-╠════════════════════════════════════════════════════════╣
-║  Agent        Status        Turn   Task               ║
-║  ──────────   ──────────    ────   ──────────         ║
-║  backend      ● running      12   JWT Auth API        ║
-║  frontend     ✓ completed    18   Login UI            ║
-║  qa           ○ blocked       -   Security Review     ║
-╠════════════════════════════════════════════════════════╣
-║  Latest Activity:                                     ║
-║  [backend] Turn 12 - Added tests and rate limit       ║
-║  [frontend] Completed - All criteria met              ║
-╠════════════════════════════════════════════════════════╣
-║  Updated: 2026-01-28 14:32:05  |  Ctrl+C to exit     ║
-╚════════════════════════════════════════════════════════╝
-```
-
-### Web Dashboard
-
-```bash
-bunx oh-my-ag dashboard:web
-# → http://localhost:9847
-```
-
-Features:
-
-- Real-time WebSocket push (no polling)
-- Auto-reconnect on disconnection
-- Purple Serena-themed UI
-- Session status, agent table, activity log
-- Event-driven file watching via chokidar (cross-platform)
-
-## Project Structure
-
-```
-.
-├── .agent/
-│   ├── config/
-│   │   └── user-preferences.yaml   # Language, timezone, CLI mapping
-│   ├── workflows/
-│   │   ├── coordinate.md           # /coordinate (multi-agent orchestration via UI)
-│   │   ├── orchestrate.md          # /orchestrate (automated CLI parallel execution)
-│   │   ├── plan.md                 # /plan (PM task decomposition)
-│   │   ├── review.md               # /review (full QA pipeline)
-│   │   ├── debug.md                # /debug (structured bug fixing)
-│   │   ├── setup.md                # /setup (CLI & MCP configuration)
-│   │   └── tools.md                # /tools (MCP tool management)
-│   └── skills/
-│       ├── _shared/                    # Common resources (not a skill)
-│       │   ├── serena-memory-protocol.md
-│       │   ├── common-checklist.md
-│       │   ├── skill-routing.md
-│       │   ├── context-loading.md
-│       │   ├── context-budget.md
-│       │   ├── reasoning-templates.md
-│       │   ├── clarification-protocol.md
-│       │   ├── difficulty-guide.md
-│       │   ├── lessons-learned.md
-│       │   ├── verify.sh
-│       │   └── api-contracts/
-│       ├── workflow-guide/             # Multi-agent coordination
-│       ├── pm-agent/                   # Product manager
-│       ├── frontend-agent/             # React/Next.js
-│       ├── backend-agent/              # FastAPI
-│       ├── mobile-agent/               # Flutter
-│       ├── qa-agent/                   # Security & QA
-│       ├── debug-agent/                # Bug fixing
-│       ├── orchestrator/               # CLI-based sub-agent spawner
-│       └── commit/                     # Conventional commits skill
-│       # Each skill has:
-│       #   SKILL.md              (~40 lines, token-optimized)
-│       #   resources/
-│       #     ├── execution-protocol.md  (chain-of-thought steps)
-│       #     ├── examples.md            (few-shot input/output)
-│       #     ├── checklist.md           (self-verification)
-│       #     ├── error-playbook.md      (failure recovery)
-│       #     ├── tech-stack.md          (detailed tech specs)
-│       #     └── snippets.md           (copy-paste patterns)
-├── .serena/
-│   └── memories/                   # Runtime state (gitignored)
-├── package.json
-├── README.md                       # This file (English)
-├── README.ko.md                    # Korean guide
-└── USAGE.md                        # Detailed usage guide
-```
+For requirements, screenshots, and detailed behavior, see [`docs/USAGE.md`](./docs/USAGE.md#real-time-dashboards).
 
 ## Skill Architecture
 
@@ -435,69 +342,20 @@ Each skill provides domain-specific resources:
 | `tech-stack.md` | Detailed technology specifications |
 | `snippets.md` | Copy-paste ready code patterns |
 
-## Skills Overview
-
-### workflow-guide
-
-**Triggers**: Complex multi-domain requests
-**Does**: Guides coordination of PM, Frontend, Backend, Mobile, QA agents
-
-### pm-agent
-
-**Triggers**: "plan this", "break down", "what should we build"
-**Output**: `.agent/plan.json` with tasks, priorities, dependencies
-
-### frontend-agent
-
-**Triggers**: UI, components, styling, client-side logic
-**Stack**: Next.js 14, TypeScript, Tailwind CSS, shadcn/ui
-
-### backend-agent
-
-**Triggers**: APIs, databases, authentication
-**Stack**: FastAPI, SQLAlchemy, PostgreSQL, Redis, JWT
-
-### mobile-agent
-
-**Triggers**: Mobile apps, iOS/Android
-**Stack**: Flutter 3.19+, Dart, Riverpod
-
-### qa-agent
-
-**Triggers**: "review security", "check performance", "audit"
-**Checks**: OWASP Top 10, Lighthouse, WCAG 2.1 AA
-
-### debug-agent
-
-**Triggers**: Bug reports, error messages, crashes
-**Output**: Fixed code, regression tests, bug documentation
-
-### orchestrator
-
-**Triggers**: Programmatic sub-agent execution
-**CLIs**: Gemini, Claude, Codex, Qwen (configurable)
-
-### commit
-
-**Triggers**: "commit", "커밋해줘", "save changes"
-**Format**: Conventional Commits with Co-Author tag
-**Config**: `.agent/skills/commit/config/commit-config.yaml`
-
 ## CLI Commands
 
 ```bash
 bunx oh-my-ag                # Interactive skill installer
-bunx oh-my-ag doctor         # Check setup & repair missing skills
-bunx oh-my-ag doctor --json  # JSON output for CI/CD
-bunx oh-my-ag update         # Update skills to latest version
-bunx oh-my-ag stats          # View productivity metrics
-bunx oh-my-ag stats --reset  # Reset metrics
-bunx oh-my-ag retro          # Session retrospective (learnings & next steps)
+bunx oh-my-ag bridge         # Bridge MCP stdio to SSE (for Serena)
 bunx oh-my-ag dashboard      # Terminal real-time dashboard
 bunx oh-my-ag dashboard:web  # Web dashboard (http://localhost:9847)
-bunx oh-my-ag dashboard:web  # Web dashboard (http://localhost:9847)
-bunx oh-my-ag bridge         # Bridge MCP stdio to SSE (for Serena)
+bunx oh-my-ag doctor         # Check setup & repair missing skills
 bunx oh-my-ag help           # Show help
+bunx oh-my-ag memory:init    # Initialize Serena memory schema
+bunx oh-my-ag retro          # Session retrospective (learnings & next steps)
+bunx oh-my-ag stats          # View productivity metrics
+bunx oh-my-ag update         # Update skills to latest version
+bunx oh-my-ag usage          # Show model usage quotas
 ```
 
 ## Troubleshooting
@@ -592,6 +450,37 @@ Consumer projects can use the sync action directly:
     github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+## Sponsors
+
+This project is maintained thanks to our generous sponsors.
+
+<a href="https://github.com/sponsors/first-fluke">
+  <img src="https://img.shields.io/badge/Sponsor-♥-ea4aaa?style=for-the-badge" alt="Sponsor" />
+</a>
+<a href="https://buymeacoffee.com/firstfluke">
+  <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-☕-FFDD00?style=for-the-badge" alt="Buy Me a Coffee" />
+</a>
+
+### 🚀 Champion
+
+<!-- Champion tier ($100/mo) logos here -->
+
+### 🛸 Booster
+
+<!-- Booster tier ($30/mo) logos here -->
+
+### ☕ Contributor
+
+<!-- Contributor tier ($10/mo) names here -->
+
+[Become a sponsor →](https://github.com/sponsors/first-fluke)
+
+See [SPONSORS.md](./SPONSORS.md) for a full list of supporters.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=first-fluke/oh-my-ag&type=date&legend=bottom-right)](https://www.star-history.com/#first-fluke/oh-my-ag&type=date&legend=bottom-right)
+
 ## License
 
 MIT
@@ -602,8 +491,10 @@ MIT
 |----------|----------|---------|
 | [README.md](./README.md) | Users | Project overview (English) |
 | [README.ko.md](./README.ko.md) | Users | Project overview (Korean) |
-| [USAGE.md](./USAGE.md) | Users | How to use the skills (English) |
-| [USAGE.ko.md](./USAGE.ko.md) | Users | How to use the skills (Korean) |
+| [USAGE.md](./docs/USAGE.md) | Users | How to use the skills (English) |
+| [USAGE.ko.md](./docs/USAGE.ko.md) | Users | How to use the skills (Korean) |
+| [project-structure.md](./docs/project-structure.md) | Users | Full project directory structure (English) |
+| [project-structure.ko.md](./docs/project-structure.ko.md) | Users | Full project directory structure (Korean) |
 | [AGENT_GUIDE.md](./AGENT_GUIDE.md) | Developers | **How to integrate into your existing project** |
 
 ---

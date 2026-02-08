@@ -1,6 +1,6 @@
 {
   "name": "oh-my-ag",
-  "version": "1.5.8",
+  "version": "1.13.2",
   "description": "Professional agent skills for Google Antigravity IDE - PM, Frontend, Backend, Mobile, QA, and Debug specialists that work together seamlessly",
   "type": "module",
   "bin": {
@@ -53,7 +53,9 @@
     "commander": "^12.0.0",
     "p-map": "^7.0.4",
     "picocolors": "^1.1.1",
-    "ws": "^8.18.0"
+    "ws": "^8.18.0",
+    "yaml": "^2.8.2",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.13",

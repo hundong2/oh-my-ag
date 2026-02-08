@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "serena": {
-      "url": "http://localhost:12341/sse"
+      "url": "http://localhost:12341/mcp"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "oh-my-ag",
-  "version": "1.5.8",
-  "releaseDate": "2026-02-02T09:58:07.699Z",
+  "version": "1.13.2",
+  "releaseDate": "2026-02-08T09:46:51.710Z",
   "repository": "https://github.com/first-fluke/oh-my-ag",
   "files": [
     {
@@ -121,7 +121,7 @@
     },
     {
       "path": ".agent/skills/commit/config/commit-config.yaml",
-      "sha256": "52cf1faa0d18ee63edeaab5443468493e69f4cd7f13f5c2bf38b403763250b5f",
+      "sha256": "a6443cb90e82b3beffe316c2331643a526bbc2a59f330e3f90added684a27e94",
       "size": 880
     },
     {
@@ -261,8 +261,8 @@
     },
     {
       "path": ".agent/skills/orchestrator/config/cli-config.yaml",
-      "sha256": "4425eac2ae208a4ae0b9498263b49b94931c61403b0bd5fb509c6d6db6cf268b",
-      "size": 2191
+      "sha256": "179632de0439c552e146178a7d05bf7ca267492167ae413fe3f378ebe044c5b1",
+      "size": 2132
     },
     {
       "path": ".agent/skills/orchestrator/resources/memory-schema.md",
@@ -406,8 +406,8 @@
     },
     {
       "path": ".agent/workflows/tools.md",
-      "sha256": "e4e6229c4c9eb0d3390b0eedc3347472964914c86a10b21aa6bffd3d7787002c",
-      "size": 5256
+      "sha256": "4ee5af163ecd11aa3b18711ae1203ffb9221ec90f0d95ead17d4bbfa0c45f70e",
+      "size": 4914
     }
   ],
   "checksums": {
